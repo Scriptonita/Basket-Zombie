@@ -1,6 +1,6 @@
-var Game = function(game) {};
+var Tutorial = function(game) {};
 
-Game.prototype={
+Tutorial.prototype={
 
     init: function () {
         //console.log("Se inicia el juego.");
@@ -10,29 +10,44 @@ Game.prototype={
         velocidadY = 1;
         puntuacionJugador = 0;
         puntuacionRival = 0;
-        puntuacion = puntuacionJugador + " - " + puntuacionRival;
+        puntuacion = " Tu " + puntuacionJugador + " - " + puntuacionRival + " Piratas ";
         tiempo = 50; //50
-        relojCSS = { fontSize: '30px', fill: 'blue', padding: '115px', marginRight: '16px', align: 'right' };
+        relojCSS = { fontSize: '30px', fill: 'blue', padding: '115px', marginRight: '16px' };
+
         alto  = document.documentElement.clientHeight;
         ancho = document.documentElement.clientWidth;
+
         canastaX = 0;
+        //canastaY = 0;
+
         prevX = ancho - (ancho * 8/10);
         prevY = alto - (alto * 3/6) - (DIAMETRO_BOLA/2);
+
         //console.log("Alto: " + alto + "  ... Ancho: " + ancho);
+        tutorialPaso = 1;
         switch(lng) {
           case "es":
             idioma = {
-              tiempoExtra: "Tiempo Extra"
+              mueve: "* Inclina el móvil para mover la pelota",
+              encesta: "* Encesta en la canasta de los Zombies",
+              tocan: "* Si te tocan punto para ellos",
+              tocado: "¡¡¡Te ha tocado un zombie!!!"
             };
             break;
           case "en":
             idioma = {
-              tiempoExtra: "Extra Time"
+              mueve: "* Tilt your mobil to move the ball",
+              encesta: "* Go into zombies' basket",
+              tocan: "* If zombies touch you it's point for them",
+              tocado: "A zombie touched you!!!"
             };
             break;
           default:
             idioma = {
-              tiempoExtra: "Extra Time"
+              mueve: "* Tilt your mobil to move the ball",
+              encesta: "* Go into zombies' basket",
+              tocan: "* If zombies touch you it's point for them",
+              tocado: "A zombie touched you!!!"
             };
             break;
         }
@@ -54,8 +69,6 @@ Game.prototype={
       //console.log("Leido canasta Jugador");
       game.load.image('canastaZombies', 'assets/aroRival.png');
       //console.log("Leido canasta Zombies");
-      game.load.image('marcador', 'assets/marcador.png');
-      //console.log("Leido marcador");
       game.load.spritesheet('bola', 'assets/bolasSprite.png', 40, 40);
       //console.log("Leido sprite Bola");
       game.load.spritesheet('zombie', 'assets/zombiesPiratas.png', 33, 44);
@@ -83,17 +96,15 @@ Game.prototype={
       //console.log ("Fondo creado OK");
 
       //Marcador
-      marcador = game.add.sprite(game.world.centerX, alto, "marcador");
-      marcador.anchor.y = 1;
-      marcador.anchor.x = 0.5;
-      marcador.width = ancho / 5;
-      marcador.height = alto / 4;
-      scoreText = game.add.text(game.world.centerX, alto - 15, puntuacion, { fontSize: '25px', fill: 'white'});
-      scoreText.anchor.x = 0.5;
-      scoreText.anchor.y = 1;
+      //scoreText = game.add.text(16, 16, puntuacion, { fontSize: '20px', fill: '#757676', backgroundColor: 'white', padding: '115px', marginRight: '16px' });
+      //scoreText = game.add.text(16, 16, puntuacion, { fontSize: '20px', fill: 'blue', backgroundColor: 'white', padding: '115px', marginRight: '16px', borderStyle: 'solid', borderWidth: '2px'});
+      textoTuto1 = game.add.text(16, 40, idioma.mueve, { fontSize: '20px', fill: 'red', backgroundColor: 'white', padding: '115px', marginRight: '16px', borderStyle: 'solid', borderWidth: '2px'});
+      textoTuto2 = game.add.text(16, 64, idioma.encesta, { fontSize: '20px', fill: 'red', backgroundColor: 'white', padding: '115px', marginRight: '16px', borderStyle: 'solid', borderWidth: '2px'});
+      textoTuto3 = game.add.text(16, 88, idioma.tocan, { fontSize: '20px', fill: 'red', backgroundColor: 'white', padding: '115px', marginRight: '16px', borderStyle: 'solid', borderWidth: '2px'});
+
       //console.log("Puntuacion creada");
-      reloj = game.add.text(game.world.centerX, alto - marcador.height + marcador.height/15, tiempo, { fontSize: '20px', fill: 'white' });
-      reloj.anchor.x = 0.5;
+      //reloj = game.add.text(ancho-50, 16, tiempo, {fontSize: '20px', fill: '#757676', backgroundColor: 'white', padding: '115px' });
+      //reloj = game.add.text(ancho-50, 16, tiempo, relojCSS);
       //console.log("Marcador colocado");
 
       //CanastaJugador
@@ -117,7 +128,6 @@ Game.prototype={
       canastaX = canasta.x + (canasta.width / 2);
       //canastaY = game.world.centerY;
 
-      //objetivo = game.add.text(canastaX,canastaY, "X", {fontSize = '30px'});
 
       //bola
       bola = game.add.sprite((ancho - (ancho * 9/10)), (game.world.centerY - (DIAMETRO_BOLA/2)), 'bola');
@@ -143,21 +153,11 @@ Game.prototype={
       for (var x = 0; x < 4; x++) {
         var zombie = zombies.create(posicionesInicio[x][0], posicionesInicio[x][1], 'zombie');
         game.physics.arcade.enable(zombie);
-        zombie.isCircle = true;
         zombie.body.collideWorldBounds = true;
-        if (nivel < 5) {
-          zombie.body.bounce.setTo(0.8,0.8);
-        } else if (nivel < 10) {
-          zombie.body.bounce.setTo(0.85,0.85);
-        } else if (nivel < 20) {
-          zombie.body.bounce.setTo(0.9,0.9);
-        } else if (nivel < 30){
-          zombie.body.bounce.setTo(0.95,0.95);
-        } else {
-          zombie.body.bounce.setTo(1,1);
-        }
-        zombie.body.moves = true;
-        zombie.body.velocity.setTo(50 + nivel * 10, 50 + nivel * 10);
+        //zombie.body.bounce.setTo(0.8,0.8);
+        zombie.body.moves = false;
+
+        //zombie.body.velocity.setTo(50 + nivel * 10, 50 + nivel * 10);
         zombie.animations.add("down", [0, 1, 2], 10, true);
         zombie.animations.add("left", [3, 4, 5], 10, true);
         zombie.animations.add("right", [6, 7, 8], 10, true);
@@ -168,9 +168,9 @@ Game.prototype={
       //Capitan
       capitan = game.add.sprite((ancho - (ancho * 2/10)), (alto - (alto * 3/6) - DIAMETRO_BOLA/2), 'capitan');
       game.physics.arcade.enable(capitan);
-      capitan.isCircle = true;
       capitan.body.collideWorldBounds = true;
-      capitan.body.bounce.setTo(1,1);
+      //capitan.body.bounce.setTo(1,1);
+      capitan.body.moves = false;
       capitan.animations.add("down", [0, 1, 2], 10, true);
       capitan.animations.add("left", [3, 4, 5], 10, true);
       capitan.animations.add("right", [6, 7, 8], 10, true);
@@ -183,21 +183,21 @@ Game.prototype={
       //console.log ("Zombies: ", zombies);
 
       //audio ambiente
-      audioAmb = game.add.audio('jugando');
-      audioAmb.loop = true;
+      //audioAmb = game.add.audio('jugando');
+      //audioAmb.loop = true;
 
 
       //bocina
-      bocina = game.add.audio('bocina');
-      bocina.loop = false;
+      //bocina = game.add.audio('bocina');
+      //bocina.loop = false;
 
       //pito arbitro
       pito = game.add.audio('pito');
       pito.loop = false;
 
       //Tiempo
-      game.time.events.add(Phaser.Timer.SECOND * 1, this.actualizaReloj, this);
-      //console.log("Reloj iniciado");
+      //game.time.events.add(Phaser.Timer.SECOND * 1, this.actualizaReloj, this);
+      ////console.log("Reloj iniciado");
 
       //Sensores de movimiento
       watchID = navigator.accelerometer.watchAcceleration(this.registraDireccion, this.enError,{ frequency: 5 });
@@ -205,18 +205,16 @@ Game.prototype={
 
       music.stop();
 
-      gameOptions.playSound? pito.play() : false;
-      //console.log("gameOptions.playSound = " + gameOptions.playSound);
-      gameOptions.playSound? audioAmb.play() : false;
+      //gameOptions.playSound? pito.play() : false;
+      ////console.log("gameOptions.playSound = " + gameOptions.playSound);
+      //gameOptions.playSound? audioAmb.play() : false;
     },
 
     update: function() {
 
-      var factorDificultad = (50 + (dificultad * 100));
+      var factorDificultad = (50 + (nivel * 10));
       bola.body.velocity.y = (velocidadY * factorDificultad);
       bola.body.velocity.x = (velocidadX * factorDificultad);
-
-
 
       if (prevX > bola.x) {
         if (Math.abs(prevX - bola.x >= Math.abs(prevY - bola.y))) {
@@ -235,132 +233,23 @@ Game.prototype={
 
       prevX = bola.x;
       prevY = bola.y;
-      for (var z = 0; z < 4; z++) {
 
-        //game.physics.arcade.accelerateToObject(zombies.children[z], bola, 70 * nivel, 70 * nivel, 70 * nivel);
-        //var bx = bola.x;
-        //var by = bola.y;
-
-        //var zx = zombies.children[z].x;
-        //var zy = zombies.children[z].y;
-        /*
-          //console.log("Zombie X prev: " + zombies.children[z].body.prev.x + " || Zombie X: " + zombies.children[z].body.x);
-
-          if (zombies.children[z].body.prev.x !== zombies.children[z].body.x) {
-            if (zombies.children[z].body.deltaX()) {
-                zombies.children[z].animations.play("right");
-            } else {
-                zombies.children[z].animations.play("left");
-            }
-          } else if (zombies.children[z].body.prev.y !== zombies.children[z].body.y) {
-            if (zombies.children[z].body.deltaY()) {
-                zombies.children[z].animations.play("down");
-            } else {
-                zombies.children[z].animations.play("up");
-            }
-          }
-          */
-
-
-
-        if (Math.abs(zombies.children[z].body.prev.x - zombies.children[z].body.x) >= Math.abs(zombies.children[z].body.prev.y - zombies.children[z].body.y)) {
-          if (zombies.children[z].body.prev.y > zombies.children[z].body.y) {
-            zombies.children[z].play("left");
-          } else {
-            zombies.children[z].play("right");
-          }
-        } else if (zombies.children[z].body.prev.x >= zombies.children[z].body.x) {
-          zombies.children[z].play("up");
-        } else {
-          zombies.children[z].play("down");
-        }
-
-
-
-      }
-      if (nivel < 10) {
-        game.physics.arcade.accelerateToObject(capitan, bola, 80 + nivel * 10, 80 + nivel * 10, 100 - nivel * 10);
-      } else {
-        game.physics.arcade.accelerateToObject(capitan, bola, 80 + nivel * 10, 80 + nivel * 10, 10);
-      }
-      var bx = bola.x;
-      var by = bola.y;
-      var cx = capitan.x;
-      var cy = capitan.y;
-      if (Math.abs(bx - cx) >= Math.abs(by - cy)) {
-        if (by > cy) {
-          capitan.animations.play("down");
-        } else {
-          capitan.animations.play("up");
-        }
-      } else if (bx >= cx) {
-        capitan.animations.play("right");
-      } else {
-        capitan.animations.play("left");
-      }
 
       if (((Math.abs((bola.x + (DIAMETRO_BOLA/2)) - canastaX)) < 5) && (Math.abs(((bola.y + (DIAMETRO_BOLA/2)) - game.world.centerY)) < 5)) {
         this.encestado();
       }
 
       game.physics.arcade.collide(bola, zombies, this.tocado, null, this);
-      game.physics.arcade.collide(zombies, zombies, this.zombiesTocandose, null, this);
-      game.physics.arcade.collide(bola, capitan, this.capitan, null, this);
-      game.physics.arcade.collide(zombies, capitan, this.zombiesTocandose, null, this);
-  },
-
-  actualizaReloj: function() {
-      tiempo--;
-      reloj.text = tiempo;
-      if (tiempo == 10) {
-        reloj.fill = "red";
-      }
-      if (tiempo === 0) {
-        if (puntuacionJugador == puntuacionRival) {
-          tiempo = 16;
-          game.time.events.add(Phaser.Timer.SECOND * 1, this.actualizaReloj, this);
-          tiempoExtra = game.add.text(game.world.centerX, alto - marcador.height - 5, idioma.tiempoExtra, { fontSize: '30px', fill: 'blue', padding: '115px', align: 'right' });
-          tiempoExtra.anchor.x = 0.5;
-          tiempoExtra.anchor.y = 1;
-        } else {
-          //console.log ("fin del tiempo");
-          audioAmb.stop();
-          gameOptions.playSound? bocina.play() : false;
-          game.time.events.add(Phaser.Timer.SECOND * 1,function(){gameOptions.playMusic? music.play() : false;}, this);
-          if (puntuacionJugador < puntuacionRival) {
-            //game.time.events.add(Phaser.Timer.SECOND * 0.5,irAGameOver, this);
-            irAGameOver(this);
-          } else {
-            //game.time.events.add(Phaser.Timer.SECOND * 0.5,irAContinuar, this);
-            nivel++;
-            irAContinuar(this);
-          }
-        }
-
-      } else {
-        game.time.events.add(Phaser.Timer.SECOND * 1, this.actualizaReloj, this);
-      }
-  },
-
-  moverCapitan: function () {
-    ////console.log ("Capitan2: ", capitan);
-    //gameB.physics.arcade.accelerateToObject(capitan, bola, 30, 30, 30);
+      //game.physics.arcade.collide(zombies, zombies, this.zombiesTocandose, null, this);
+      game.physics.arcade.collide(bola, capitan, this.tocado, null, this);
+      //game.physics.arcade.collide(zombies, capitan, this.zombiesTocandose, null, this);
   },
 
   tocado: function () {
-    //console.log ("Te ha tocado un zombie!!!");
+    tocadoZombie = game.add.text(16, 16, idioma.tocado, { fontSize: '20px', fill: 'blue', backgroundColor: 'white', padding: '115px', marginRight: '16px', borderStyle: 'solid', borderWidth: '2px'});
+    game.time.events.add(Phaser.Timer.SECOND * 4, function(){tocadoZombie.destroy()}, this);
     gameOptions.playSound? pito.play() : false;
-    this.puntoRival();
-  },
-
-  capitan: function () {
-    //console.log ("Te ha tocado el Capitán!!!");
-    gameOptions.playSound? pito.play() : false;
-    this.puntoRival();
-  },
-
-  zombiesTocandose: function () {
-    ////console.log ("Los zombies se chocan entre ellos");
+    //this.puntoRival();
   },
 
   mostrarPunto: function(Player){
@@ -390,8 +279,8 @@ Game.prototype={
   puntoRival: function(){
     this.paraAcelerometro(watchID);
     puntuacionRival = puntuacionRival + 1;
-    puntuacion = puntuacionJugador + " - " + puntuacionRival;
-    scoreText.text = puntuacion;
+    puntuacion = " Tu " + puntuacionJugador + " - " + puntuacionRival + " Piratas ";
+    //scoreText.text = puntuacion;
     this.mostrarPunto("Z");
     this.reiniciaPosiciones();
     //gameB.stage.backgroundColor = '#ff0000';
@@ -402,8 +291,8 @@ Game.prototype={
   puntoJugador: function(){
     this.paraAcelerometro(watchID);
     puntuacionJugador = puntuacionJugador + 1;
-    puntuacion = puntuacionJugador + " - " + puntuacionRival;
-    scoreText.text = puntuacion;
+    puntuacion = " Tu " + puntuacionJugador + " - " + puntuacionRival + " Piratas ";
+    //scoreText.text = puntuacion;
     this.mostrarPunto("J");
     this.reiniciaPosiciones();
     //gameB.stage.backgroundColor = '#ff0000';
@@ -414,7 +303,9 @@ Game.prototype={
   encestado: function() {
     //console.log("Punto para ti!!!");
     gameOptions.playSound? pito.play() : false;
-    this.puntoJugador();
+    //this.puntoJugador();
+    localStorage.setItem("tutorial", true);
+    game.state.start("Game");
   },
 
   bajaVelocidad: function() {
@@ -446,7 +337,7 @@ Game.prototype={
 
   incrementaPuntuacion: function(){
     puntuacion = puntuacion+1;
-    scoreText.text = puntuacion;
+    //scoreText.text = puntuacion;
 
     //zombie.body.x = this.inicioX();
     //zombie.body.y = this.inicioY();
@@ -458,7 +349,7 @@ Game.prototype={
 
   incrementaPuntuacion2: function(){
     puntuacion = puntuacion+10;
-    scoreText.text = puntuacion;
+    //scoreText.text = puntuacion;
     /*
     objetivo2.body.x = this.inicioX();
     objetivo2.body.y = this.inicioY();
@@ -512,7 +403,6 @@ Game.prototype={
   },
 
   registraDireccion: function(datosAceleracion){
-    // Al estar en modo landscape otorgamos a Y los datos de X y viceversa
     if( /(android)/i.test(navigator.userAgent) ) {
       velocidadX = datosAceleracion.y ;
       velocidadY = datosAceleracion.x ;

@@ -5,6 +5,22 @@ Credits.prototype = {
   preload: function () {
     this.optionCount = 1;
     this.creditCount = 0;
+    switch(lng) {
+      case "es":
+        idioma = {
+          volver: "<- Volver"
+        };
+        break;
+      case "en":
+        idioma = {
+          volver: "<- Back"
+        };
+        break;
+      default:
+        idioma = {
+          volver: "<- Back"
+        }
+    }
   },
 
   addCredit: function(task, author) {
@@ -18,17 +34,23 @@ Credits.prototype = {
     taskText.anchor.setTo(0.5);
     taskText.stroke = "rgba(0,0,0,0)";
     taskText.strokeThickness = 4;
-    game.add.tween(authorText).to( { y: -300 }, 20000, Phaser.Easing.Cubic.Out, true, this.creditCount * 5000);
-    game.add.tween(taskText).to( { y: -200 }, 20000, Phaser.Easing.Cubic.Out, true, this.creditCount * 5000);
+    game.add.tween(authorText).to( { y: -300 }, 20000, Phaser.Easing.Cubic.Out, true, this.creditCount * 5500);
+    game.add.tween(taskText).to( { y: -200 }, 20000, Phaser.Easing.Cubic.Out, true, this.creditCount * 5500);
     this.creditCount ++;
   },
 
   addMenuOption: function(text, callback) {
-    var optionStyle = { font: '20pt MonstersAttack', fill: 'white', align: 'left', stroke: 'rgba(0,0,0,0)', srokeThickness: 4};
+    var optionStyle = {
+      font: '20pt',
+      align: 'left',
+      fill: 'yellow',
+      stroke: 'red',
+      fontWeight: "bold",
+      strokeThickness: 15
+    };
+
     var txt = game.add.text(10, alto - 50, text, optionStyle);
 
-    txt.stroke = "rgba(0,0,0,0";
-    txt.strokeThickness = 4;
     var onOver = function (target) {
       target.fill = "#FEFFD5";
       target.stroke = "rgba(200,200,200,0.5)";
@@ -42,25 +64,34 @@ Credits.prototype = {
     //txt.useHandCursor = true;
     txt.inputEnabled = true;
     txt.events.onInputUp.add(callback, this);
-    txt.events.onInputOver.add(onOver, this);
-    txt.events.onInputOut.add(onOut, this);
-
+    //txt.events.onInputOver.add(onOver, this);
+    //txt.events.onInputOut.add(onOut, this);
+    txt.font = "FontdinerSwanky";
     this.optionCount ++;
   },
 
   create: function () {
     this.stage.disableVisibilityChange = true;
     var bg = game.add.sprite(0, 0, 'options-bg');
-    var recursos = "openclipart.org \n freepik.es \n clipartpanda.com \n 1001freefonts.com \n freesound.org \n github.com/MattMcFarland/\nphaser-menu-system"
-
+    alto  = document.documentElement.clientHeight;
+    ancho = document.documentElement.clientWidth;
+    bg.width = document.documentElement.clientWidth;
+    bg.height = document.documentElement.clientHeight;
+    var recursosGraficos = "Graficos:\n openclipart.org \n freepik.es \n clipartpanda.com";
+    var recursosSonido = "Sonidos:\n freesound.org \n incompetech.com";
+    var recursosFuentes = "Fuentes:\n 1001freefonts.com";
+    var plantilla = "Plantilla Phaser:\n github.com/MattMcFarland/\nphaser-menu-system";
     this.addCredit('Scriptonita', 'Javi Herrera');
     this.addCredit('Phaser.io & \n Phonegap Cordova', 'Powered By');
-    this.addCredit('Curso desarrollo apps', 'MiriadaX');
-    this.addCredit(recursos, '');
-    this.addMenuOption('<- Volver', function (e) {
+    this.addCredit(recursosGraficos, '');
+    this.addCredit(recursosSonido, '');
+    this.addCredit(recursosFuentes, '');
+    this.addCredit(plantilla, '');
+    this.addMenuOption(idioma.volver, function (e) {
+      boton.play();
       game.state.start("GameMenu");
     });
-    game.add.tween(bg).to({alpha: 0}, 20000, Phaser.Easing.Cubic.Out, true, 25000);
+    game.add.tween(bg).to({alpha: 0}, 20000, Phaser.Easing.Cubic.Out, true, 30000);
   }
 
 };

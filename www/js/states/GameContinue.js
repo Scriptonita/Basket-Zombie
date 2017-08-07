@@ -2,50 +2,63 @@ var GameContinue = function(game) {};
 
 GameContinue.prototype = {
 
-  preload: function () {
-    this.optionCount = 1;
+  menuConfig: {
+    startY: game.world.centerY - 120,
+    startX: "center"
   },
 
-  addMenuOption: function(text, callback) {
-    var optionStyle = { font: '25pt MonstersAttack', fill: 'white', align: 'left', stroke: 'rgba(0,0,0,0)', srokeThickness: 4};
-    var txt = game.add.text(game.world.centerX, (this.optionCount * 80) + 125, text, optionStyle);
-    txt.anchor.setTo(0.5);
-    txt.stroke = "rgba(0,0,0,0";
-    txt.strokeThickness = 4;
-    var onOver = function (target) {
-      target.fill = "#FEFFD5";
-      target.stroke = "rgba(200,200,200,0.5)";
-      txt.useHandCursor = true;
-    };
-    var onOut = function (target) {
-      target.fill = "white";
-      target.stroke = "rgba(0,0,0,0)";
-      txt.useHandCursor = false;
-    };
-    //txt.useHandCursor = true;
-    txt.inputEnabled = true;
-    txt.events.onInputUp.add(callback, this);
-    txt.events.onInputOver.add(onOver, this);
-    txt.events.onInputOut.add(onOut, this);
-
-    this.optionCount ++;
-
-
+  preload: function () {
+    this.optionCount = 1;
+    game.load.image('pelota', 'assets/images/bola-gafas.png');
+    maxNivel = parseInt(localStorage.getItem("maxNivel"));
+    if (maxNivel < nivel) {
+      //maxNivel.set(nivel);
+      localStorage.setItem("maxNivel", nivel);
+    }
   },
 
   create: function () {
-    game.add.sprite(0, 0, 'options-bg');
+    switch(lng) {
+      case "es":
+        idioma = {
+          nivel: "Ir a Nivel " + nivel,
+          salir: "Salir"
+        };
+        break;
+      case "en":
+        idioma = {
+          nivel: "Play Level " + nivel,
+          salir: "Exit"
+        };
+        break;
+      default:
+        idioma = {
+          nivel: "Play Level " + nivel,
+          salir: "Exit"
+        }
+    }
+    var fondo = game.add.sprite(0, 0, 'options-bg');
+    fondo.width = document.documentElement.clientWidth;
+    fondo.height = document.documentElement.clientHeight;
     var titleStyle = { font: 'bold 35pt MonstersAttack', fill: '#FDFFB5', align: 'center'};
-    var text = game.add.text(game.world.centerX, 100, "Has ganado", titleStyle);
-    text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
+    var text = game.add.text(game.world.centerX, 60, "Has ganado", titleStyle);
+    text.setShadow(10, 10, 'rgba(50,150,150,0.5)', 10);
     text.anchor.set(0.5);
-    this.addMenuOption('ir a Nivel ' + nivel, function (e) {
+    var pelota = game.add.image(game.world.centerX - game.world.centerX / 3, game.world.centerY + game.world.centerY / 3, "pelota");
+    pelota.width = game.world.centerX;
+    pelota.height = game.world.centerY ;
+    pelota.anchor.set(0.5);
+    this.addMenuOption(idioma.nivel, function (e) {
+      boton.play();
       this.game.state.start("Game");
-    });
-    this.addMenuOption('Salir', function (e) {
+    }, "textMenu");
+    this.addMenuOption(idioma.salir, function (e) {
+      boton.play();
       this.game.state.start("GameMenu");
-    });
+    }, "textMenu");
     game.time.events.add(Phaser.Timer.SECOND * 2,function(){gameOptions.playMusic? music.play() : false;}, this);
     //gameOptions.playMusic? music.play() : false;
   }
 };
+
+Phaser.Utils.mixinPrototype(GameContinue.prototype, mixins);

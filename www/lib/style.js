@@ -10,31 +10,50 @@ var style;
   style = {
     navitem: {
       base: {
-        font: '30pt TheMinion',
-        align: 'left',
-        srokeThickness: 4
+        fill: 'yellow',
+        stroke: 'red',
+        fontWeight: "bold",
+        strokeThickness: 15
       },
       default: {
-        fill: defaultColor,
-        stroke: 'rgba(0,0,0,0)'
+        fill: 'yellow',
+        stroke: 'red',
+        fontWeight: "bold",
+        strokeThickness: 15
       },
       inverse: {
-        fill: 'black',
-        stroke: 'black'
+        fill: 'yellow',
+        stroke: 'red',
+        fontWeight: "bold",
+        strokeThickness: 15
       },
       hover: {
-        fill: highlightColor,
-        stroke: 'rgba(200,200,200,0.5)'
+        fill: 'red',
+        stroke: 'yellow',
+        fontWeight: "bold",
+        strokeThickness: 15
+      },
+      textMenu: {
+        fill: 'yellow',
+        stroke: 'red',
+        fontWeight: "bold",
+        strokeThickness: 15
+      },
+      textJuego: {
+        fill: 'yellow',
+        stroke: 'red',
+        fontWeight: "italic",
+        strokeThickness: 10
+      },
+      video: {
+        fontSize: 20,
+        fill: 'yellow',
+        stroke: 'red',
+        fontWeight: "bold",
+        strokeThickness: 15
       }
     }
   };
-
-  for (var key in style.navitem) {
-    if (key !== "base") {
-      Object.assign(style.navitem[key], style.navitem.base)
-    }
-  }
-
 })();
 
 // the trailing () triggers the function call immediately

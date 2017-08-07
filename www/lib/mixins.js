@@ -8,7 +8,7 @@ var mixins = {
     // set the x coordinate to game.world.center if we use "center"
     // otherwise set it to menuConfig.startX
     var x = this.menuConfig.startX === "center" ?
-      game.world.centerX :
+      game.world.centerX + game.world.centerX / 2:
       this.menuConfig.startX;
 
     // set Y coordinate based on menuconfig
@@ -17,7 +17,7 @@ var mixins = {
     // create
     var txt = game.add.text(
       x,
-      (this.optionCount * 75) + y + 10,
+      (this.optionCount * 80) + y + 15,
       text,
       style.navitem[className]
     );
@@ -28,13 +28,16 @@ var mixins = {
     txt.inputEnabled = true;
 
     txt.events.onInputUp.add(callback);
+    /*
     txt.events.onInputOver.add(function (target) {
-      target.setStyle(style.navitem.hover);
+      target.setStyle(style.navitem[className]);
+      //txt.font = "FontdinerSwanky";
     });
     txt.events.onInputOut.add(function (target) {
       target.setStyle(style.navitem[className]);
     });
-
+    */
+    txt.font = "FontdinerSwanky";
     this.optionCount ++;
   }
 };
